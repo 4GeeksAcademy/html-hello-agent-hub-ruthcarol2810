@@ -1,0 +1,1228 @@
+<!DOCTYPE html>
+<html lang="es" class="h-full">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>AgentHub - Panel de Administración</title>
+  <!-- Tailwind CSS CDN con soporte dark mode class -->
+  <script src="https://cdn.tailwindcss.com"></script>
+  <script>
+    tailwind.config = {
+      darkMode: 'class',
+      theme: {
+        extend: {
+          colors: {
+            brand: {
+              50: '#f0fdf4',
+              100: '#dcfce7',
+              500: '#22c55e',
+              600: '#16a34a',
+              700: '#15803d',
+            }
+          }
+        }
+      }
+    }
+  </script>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
+  <style>
+    body { font-family: 'Inter', sans-serif; }
+    /* Animación suave para skills y vistas */
+    .transition-max-height {
+      transition: max-height 0.3s ease-in-out, opacity 0.3s ease-in-out;
+    }
+  </style>
+</head>
+<body class="h-full bg-slate-50 text-slate-900 dark:bg-slate-950 dark:text-slate-100 flex flex-col antialiased selection:bg-indigo-500 selection:text-white">
+
+  <div class="flex h-full min-h-screen">
+    <!-- BARRA LATERAL (SIDEBAR) -->
+    <aside id="sidebar" class="fixed inset-y-0 left-0 z-40 w-64 bg-white border-r border-slate-200 dark:bg-slate-900 dark:border-slate-800 flex flex-col transition-transform duration-300 md:translate-x-0 -translate-x-full">
+      <!-- Marca / Logo -->
+      <div class="flex items-center justify-between px-6 h-16 border-b border-slate-200 dark:border-slate-800">
+        <div class="flex items-center gap-3">
+          <div class="w-9 h-9 rounded-lg bg-indigo-600 flex items-center justify-center text-white shadow-sm font-bold">
+            <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+              <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M13 10V3L4 14h7v7l9-11h-7z" />
+            </svg>
+          </div>
+          <span class="text-xl font-bold tracking-tight text-slate-900 dark:text-white">AgentHub</span>
+        </div>
+        <button id="closeSidebarBtn" class="md:hidden text-slate-500 hover:text-slate-800 dark:hover:text-slate-200">
+          <svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12"/></svg>
+        </button>
+      </div>
+
+      <!-- Navegación -->
+      <nav class="flex-1 px-3 py-4 space-y-1 overflow-y-auto">
+        <button onclick="navigate('dashboard')" data-nav="dashboard" class="nav-item w-full flex items-center gap-3 px-3.5 py-2.5 rounded-lg text-sm font-medium transition-colors text-indigo-700 bg-indigo-50 dark:bg-indigo-950/50 dark:text-indigo-300">
+          <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 6a2 2 0 012-2h2a2 2 0 012 2v2a2 2 0 01-2 2H6a2 2 0 01-2-2V6zM14 6a2 2 0 012-2h2a2 2 0 012 2v2a2 2 0 01-2 2h-2a2 2 0 01-2-2V6zM4 16a2 2 0 012-2h2a2 2 0 012 2v2a2 2 0 01-2 2H6a2 2 0 01-2-2v-2zM14 16a2 2 0 012-2h2a2 2 0 012 2v2a2 2 0 01-2 2h-2a2 2 0 01-2-2v-2z"/></svg>
+          Dashboard
+        </button>
+
+        <button onclick="navigate('usuarios')" data-nav="usuarios" class="nav-item w-full flex items-center gap-3 px-3.5 py-2.5 rounded-lg text-sm font-medium transition-colors text-slate-700 hover:bg-slate-100 dark:text-slate-300 dark:hover:bg-slate-800">
+          <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 4.354a4 4 0 110 5.292M15 21H3v-1a6 6 0 0112 0v1zm0 0h6v-1a6 6 0 00-9-5.197M13 7a4 4 0 11-8 0 4 4 0 018 0z"/></svg>
+          Gestión de usuarios
+        </button>
+
+        <button onclick="navigate('agentes')" data-nav="agentes" class="nav-item w-full flex items-center gap-3 px-3.5 py-2.5 rounded-lg text-sm font-medium transition-colors text-slate-700 hover:bg-slate-100 dark:text-slate-300 dark:hover:bg-slate-800">
+          <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9.75 17L9 20l-1 1h8l-1-1-.75-3M3 13h18M5 17h14a2 2 0 002-2V5a2 2 0 00-2-2H5a2 2 0 00-2 2v10a2 2 0 002 2z"/></svg>
+          Gestión de agentes
+        </button>
+
+        <button onclick="navigate('skills')" data-nav="skills" class="nav-item w-full flex items-center gap-3 px-3.5 py-2.5 rounded-lg text-sm font-medium transition-colors text-slate-700 hover:bg-slate-100 dark:text-slate-300 dark:hover:bg-slate-800">
+          <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19.428 15.428a2 2 0 00-1.022-.547l-2.387-.477a6 6 0 00-3.86.517l-.318.158a6 6 0 01-3.86.517L6.05 15.21a2 2 0 00-1.806.547M8 4h8l-1 1v5.172a2 2 0 00.586 1.414l5 5c1.26 1.26.367 3.414-1.415 3.414H4.828c-1.782 0-2.674-2.154-1.414-3.414l5-5A2 2 0 009 10.172V5L8 4z"/></svg>
+          Skills
+        </button>
+
+        <button onclick="navigate('contrataciones')" data-nav="contrataciones" class="nav-item w-full flex items-center gap-3 px-3.5 py-2.5 rounded-lg text-sm font-medium transition-colors text-slate-700 hover:bg-slate-100 dark:text-slate-300 dark:hover:bg-slate-800">
+          <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 12h6m-6 4h6m2 5H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z"/></svg>
+          Contrataciones
+        </button>
+
+        <button onclick="navigate('errores')" data-nav="errores" class="nav-item w-full flex items-center gap-3 px-3.5 py-2.5 rounded-lg text-sm font-medium transition-colors text-slate-700 hover:bg-slate-100 dark:text-slate-300 dark:hover:bg-slate-800">
+          <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 9v2m0 4h.01m-6.938 4h13.856c1.54 0 2.502-1.667 1.732-3L13.732 4c-.77-1.333-2.694-1.333-3.464 0L3.34 16c-.77 1.333.192 3 1.732 3z"/></svg>
+          Log de errores
+        </button>
+      </nav>
+
+      <!-- Pie de sidebar -->
+      <div class="p-4 border-t border-slate-200 dark:border-slate-800">
+        <div class="flex items-center gap-3 px-2 py-1.5 rounded-lg bg-slate-50 dark:bg-slate-800/60">
+          <div class="w-8 h-8 rounded-full bg-slate-200 dark:bg-slate-700 flex items-center justify-center text-xs font-semibold text-slate-700 dark:text-slate-200">
+            AD
+          </div>
+          <div class="truncate">
+            <p class="text-xs font-semibold text-slate-900 dark:text-white">Admin Principal</p>
+            <p class="text-xs text-slate-500 dark:text-slate-400 truncate">admin@agenthub.io</p>
+          </div>
+        </div>
+      </div>
+    </aside>
+
+    <!-- Overlay móvil para sidebar -->
+    <div id="sidebarBackdrop" class="fixed inset-0 z-30 bg-slate-900/50 backdrop-blur-sm hidden md:hidden"></div>
+
+    <!-- CONTENEDOR PRINCIPAL -->
+    <div class="flex-1 flex flex-col md:pl-64">
+      
+      <!-- HEADER / BARRA SUPERIOR -->
+      <header class="sticky top-0 z-20 h-16 bg-white/90 dark:bg-slate-900/90 backdrop-blur border-b border-slate-200 dark:border-slate-800 px-4 sm:px-6 flex items-center justify-between">
+        <div class="flex items-center gap-3">
+          <button id="openSidebarBtn" class="md:hidden p-2 rounded-lg text-slate-600 hover:bg-slate-100 dark:text-slate-300 dark:hover:bg-slate-800">
+            <svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 6h16M4 12h16M4 18h16"/></svg>
+          </button>
+          <div>
+            <h1 id="pageTitle" class="text-lg font-bold text-slate-900 dark:text-white">Dashboard</h1>
+            <p id="pageSubtitle" class="text-xs text-slate-500 dark:text-slate-400 hidden sm:block">Supervisión general de la plataforma SaaS de agentes de IA</p>
+          </div>
+        </div>
+
+        <!-- Acciones del header: Modo oscuro -->
+        <div class="flex items-center gap-3">
+          <span class="text-xs text-slate-500 dark:text-slate-400 hidden md:inline-block">Plataforma v2.4</span>
+          <!-- Botón de Modo Claro / Oscuro -->
+          <button id="themeToggleBtn" aria-label="Cambiar tema" class="flex items-center gap-2 px-3 py-1.5 rounded-lg border border-slate-200 dark:border-slate-700 bg-slate-50 dark:bg-slate-800 hover:bg-slate-100 dark:hover:bg-slate-700 text-slate-700 dark:text-slate-200 text-xs font-medium transition-colors">
+            <span id="themeIcon">
+              <!-- Icono Sol (default claro) -->
+              <svg class="w-4 h-4 text-amber-500 dark:hidden" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 3v1m0 16v1m9-9h-1M4 12H3m15.364 6.364l-.707-.707M6.343 6.343l-.707-.707m12.728 0l-.707.707M6.343 17.657l-.707.707M16 12a4 4 0 11-8 0 4 4 0 018 0z" />
+              </svg>
+              <!-- Icono Luna (para oscuro) -->
+              <svg class="w-4 h-4 text-indigo-400 hidden dark:block" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M20.354 15.354A9 9 0 018.646 3.646 9.003 9.003 0 0012 21a9.003 9.003 0 008.354-5.646z" />
+              </svg>
+            </span>
+            <span id="themeLabel" class="hidden sm:inline">Modo oscuro</span>
+          </button>
+        </div>
+      </header>
+
+      <!-- CONTENIDO PRINCIPAL (MAIN) -->
+      <main class="flex-1 p-4 sm:p-6 lg:p-8 max-w-7xl w-full mx-auto">
+        
+        <!-- SECCIÓN 1: DASHBOARD -->
+        <section id="view-dashboard" class="space-y-6">
+          <!-- Cuadrícula 2x2 de Tarjetas de Métricas -->
+          <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-2 gap-4 sm:gap-6">
+            
+            <!-- Tarjeta 1: Ingresos generados -->
+            <div class="p-6 bg-white dark:bg-slate-900 rounded-xl border border-slate-200 dark:border-slate-800 shadow-sm flex items-start justify-between">
+              <div>
+                <p class="text-xs font-semibold uppercase tracking-wider text-slate-500 dark:text-slate-400">Ingresos generados este mes</p>
+                <h3 class="text-3xl font-extrabold text-slate-900 dark:text-white mt-2">€48.250</h3>
+                <div class="flex items-center gap-1.5 mt-2 text-xs font-medium text-emerald-600 dark:text-emerald-400">
+                  <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M13 7h8m0 0v8m0-8l-8 8-4-4-6 6"/></svg>
+                  <span>+14.2% respecto al mes anterior</span>
+                </div>
+              </div>
+              <div class="w-12 h-12 rounded-xl bg-emerald-50 dark:bg-emerald-950/60 border border-emerald-200 dark:border-emerald-800 flex items-center justify-center text-emerald-600 dark:text-emerald-400">
+                <svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 8c-1.657 0-3 .895-3 2s1.343 2 3 2 3 .895 3 2-1.343 2-3 2m0-8c1.11 0 2.08.402 2.599 1M12 8V7m0 1v8m0 0v1m0-1c-1.11 0-2.08-.402-2.599-1M21 12a9 9 0 11-18 0 9 9 0 0118 0z"/></svg>
+              </div>
+            </div>
+
+            <!-- Tarjeta 2: Pérdida por descuentos y cupones -->
+            <div class="p-6 bg-white dark:bg-slate-900 rounded-xl border border-slate-200 dark:border-slate-800 shadow-sm flex items-start justify-between">
+              <div>
+                <p class="text-xs font-semibold uppercase tracking-wider text-slate-500 dark:text-slate-400">Pérdida por descuentos y cupones</p>
+                <h3 class="text-3xl font-extrabold text-slate-900 dark:text-white mt-2">€3.120</h3>
+                <div class="flex items-center gap-1.5 mt-2 text-xs font-medium text-amber-600 dark:text-amber-400">
+                  <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M7 7h.01M7 3h5c.512 0 1.024.195 1.414.586l7 7a2 2 0 010 2.828l-7 7a2 2 0 01-2.828 0l-7-7A1.994 1.994 0 013 12V7a4 4 0 014-4z"/></svg>
+                  <span>6.1% de margen absorbido en promociones</span>
+                </div>
+              </div>
+              <div class="w-12 h-12 rounded-xl bg-amber-50 dark:bg-amber-950/60 border border-amber-200 dark:border-amber-800 flex items-center justify-center text-amber-600 dark:text-amber-400">
+                <svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 5v2m0 4v2m0 4v2M5 5a2 2 0 00-2 2v3a2 2 0 110 4v3a2 2 0 002 2h14a2 2 0 002-2v-3a2 2 0 110-4V7a2 2 0 00-2-2H5z"/></svg>
+              </div>
+            </div>
+
+            <!-- Tarjeta 3: Agentes activos -->
+            <div class="p-6 bg-white dark:bg-slate-900 rounded-xl border border-slate-200 dark:border-slate-800 shadow-sm flex items-start justify-between">
+              <div>
+                <p class="text-xs font-semibold uppercase tracking-wider text-slate-500 dark:text-slate-400">Agentes activos en ejecución</p>
+                <h3 class="text-3xl font-extrabold text-slate-900 dark:text-white mt-2">128</h3>
+                <div class="flex items-center gap-1.5 mt-2 text-xs font-medium text-indigo-600 dark:text-indigo-400">
+                  <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 12l2 2 4-4m6 2a9 9 0 11-18 0 9 9 0 0118 0z"/></svg>
+                  <span>94.8% tasa de disponibilidad global</span>
+                </div>
+              </div>
+              <div class="w-12 h-12 rounded-xl bg-indigo-50 dark:bg-indigo-950/60 border border-indigo-200 dark:border-indigo-800 flex items-center justify-center text-indigo-600 dark:text-indigo-400">
+                <svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9.75 17L9 20l-1 1h8l-1-1-.75-3M3 13h18M5 17h14a2 2 0 002-2V5a2 2 0 00-2-2H5a2 2 0 00-2 2v10a2 2 0 002 2z"/></svg>
+              </div>
+            </div>
+
+            <!-- Tarjeta 4: Agentes marcados como fallando -->
+            <div class="p-6 bg-white dark:bg-slate-900 rounded-xl border border-slate-200 dark:border-slate-800 shadow-sm flex items-start justify-between">
+              <div>
+                <p class="text-xs font-semibold uppercase tracking-wider text-slate-500 dark:text-slate-400">Agentes marcados como fallando</p>
+                <h3 class="text-3xl font-extrabold text-rose-600 dark:text-rose-400 mt-2">3</h3>
+                <div class="flex items-center gap-1.5 mt-2 text-xs font-medium text-rose-600 dark:text-rose-400">
+                  <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 8v4m0 4h.01M21 12a9 9 0 11-18 0 9 9 0 0118 0z"/></svg>
+                  <span>Requieren revisión inmediata de logs</span>
+                </div>
+              </div>
+              <div class="w-12 h-12 rounded-xl bg-rose-50 dark:bg-rose-950/60 border border-rose-200 dark:border-rose-800 flex items-center justify-center text-rose-600 dark:text-rose-400">
+                <svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 9v2m0 4h.01m-6.938 4h13.856c1.54 0 2.502-1.667 1.732-3L13.732 4c-.77-1.333-2.694-1.333-3.464 0L3.34 16c-.77 1.333.192 3 1.732 3z"/></svg>
+              </div>
+            </div>
+
+          </div>
+
+          <!-- Marcador de posición para gráfico de actividad semanal -->
+          <div class="w-full bg-white dark:bg-slate-900 rounded-xl border-2 border-dashed border-slate-300 dark:border-slate-700 p-8 sm:p-12 text-center flex flex-col items-center justify-center min-h-[300px]">
+            <div class="w-14 h-14 rounded-full bg-slate-100 dark:bg-slate-800 flex items-center justify-center text-slate-400 dark:text-slate-500 mb-4">
+              <svg class="w-7 h-7" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M7 12l3-3 3 3 4-4M8 21l4-4 4 4M3 4h18M4 4h16v12a1 1 0 01-1 1H5a1 1 0 01-1-1V4z"/></svg>
+            </div>
+            <p class="text-sm font-semibold text-slate-700 dark:text-slate-200 uppercase tracking-wider">Marcador de posición para el gráfico de actividad semanal</p>
+            <p class="text-xs text-slate-500 dark:text-slate-400 mt-1 max-w-md">Representa las invocaciones diarias de agentes, ejecución de skills y tasa de éxito durante los últimos 7 días.</p>
+          </div>
+        </section>
+
+
+        <!-- SECCIÓN 2: GESTIÓN DE USUARIOS -->
+        <section id="view-usuarios" class="space-y-6 hidden">
+          <div class="flex flex-col sm:flex-row sm:items-center justify-between gap-4">
+            <div>
+              <h2 class="text-lg font-bold text-slate-900 dark:text-white">Clientes y Administradores</h2>
+              <p class="text-xs text-slate-500 dark:text-slate-400">Total de 5 usuarios registrados con contratos activos o planes SaaS</p>
+            </div>
+          </div>
+
+          <!-- Tabla de usuarios -->
+          <div class="bg-white dark:bg-slate-900 rounded-xl border border-slate-200 dark:border-slate-800 shadow-sm overflow-hidden">
+            <div class="overflow-x-auto">
+              <table class="w-full text-left text-sm text-slate-600 dark:text-slate-300">
+                <thead class="bg-slate-50 dark:bg-slate-800/60 text-xs uppercase font-semibold text-slate-500 dark:text-slate-400 border-b border-slate-200 dark:border-slate-800">
+                  <tr>
+                    <th scope="col" class="px-6 py-3.5">Nombre</th>
+                    <th scope="col" class="px-6 py-3.5">Email</th>
+                    <th scope="col" class="px-6 py-3.5">Plan</th>
+                    <th scope="col" class="px-6 py-3.5">Estado</th>
+                    <th scope="col" class="px-6 py-3.5 text-right">Acciones</th>
+                  </tr>
+                </thead>
+                <tbody id="usersTableBody" class="divide-y divide-slate-200 dark:divide-slate-800">
+                  <!-- Inyectado por JS -->
+                </tbody>
+              </table>
+            </div>
+          </div>
+        </section>
+
+
+        <!-- SECCIÓN 3: GESTIÓN DE AGENTES -->
+        <section id="view-agentes" class="space-y-6 hidden">
+          <div class="flex flex-col sm:flex-row sm:items-center justify-between gap-4">
+            <div>
+              <h2 class="text-lg font-bold text-slate-900 dark:text-white">Agentes de Inteligencia Artificial</h2>
+              <p class="text-xs text-slate-500 dark:text-slate-400">Supervisa el estado, skills habilitadas y prompts de sistema de cada agente</p>
+            </div>
+          </div>
+
+          <!-- Lista de Agentes -->
+          <div id="agentsListContainer" class="space-y-4">
+            <!-- Inyectado por JS -->
+          </div>
+        </section>
+
+
+        <!-- SECCIÓN 4: SKILLS -->
+        <section id="view-skills" class="space-y-6 hidden">
+          <!-- Explicación de Skill en AgentHub -->
+          <div class="p-5 rounded-xl bg-indigo-50 border border-indigo-100 dark:bg-indigo-950/40 dark:border-indigo-900/60 flex items-start gap-4">
+            <div class="p-2 rounded-lg bg-indigo-600 text-white shrink-0 mt-0.5">
+              <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M13 16h-1v-4h-1m1-4h.01M21 12a9 9 0 11-18 0 9 9 0 0118 0z"/></svg>
+            </div>
+            <div>
+              <h3 class="text-sm font-bold text-indigo-950 dark:text-indigo-200">¿Qué es una Skill en AgentHub?</h3>
+              <p class="text-xs text-indigo-850 dark:text-indigo-300 mt-1 leading-relaxed">
+                Una <strong>skill</strong> es una capacidad modular que se puede añadir a un agente para ampliar las tareas que puede realizar (por ejemplo, navegar por la web, leer documentos PDF, o sincronizarse con calendarios corporativos). Permiten componer agentes a medida para cada necesidad empresarial.
+              </p>
+            </div>
+          </div>
+
+          <!-- Catálogo de skills -->
+          <div id="skillsGridContainer" class="grid grid-cols-1 md:grid-cols-2 gap-4">
+            <!-- Inyectado por JS -->
+          </div>
+        </section>
+
+
+        <!-- SECCIÓN 5: CONTRATACIONES DE AGENTES -->
+        <section id="view-contrataciones" class="space-y-6 hidden">
+          <div>
+            <h2 class="text-lg font-bold text-slate-900 dark:text-white">Historial y Contratos Activos</h2>
+            <p class="text-xs text-slate-500 dark:text-slate-400">Alquiler de agentes de IA y paquetes de skills por clientes empresariales</p>
+          </div>
+
+          <div class="bg-white dark:bg-slate-900 rounded-xl border border-slate-200 dark:border-slate-800 shadow-sm overflow-hidden">
+            <div class="overflow-x-auto">
+              <table class="w-full text-left text-sm text-slate-600 dark:text-slate-300">
+                <thead class="bg-slate-50 dark:bg-slate-800/60 text-xs uppercase font-semibold text-slate-500 dark:text-slate-400 border-b border-slate-200 dark:border-slate-800">
+                  <tr>
+                    <th scope="col" class="px-6 py-3.5">Cliente</th>
+                    <th scope="col" class="px-6 py-3.5">Agente Alquilado</th>
+                    <th scope="col" class="px-6 py-3.5">Skills Contratadas</th>
+                    <th scope="col" class="px-6 py-3.5">Periodo</th>
+                    <th scope="col" class="px-6 py-3.5">Importe</th>
+                    <th scope="col" class="px-6 py-3.5 text-right">Acciones</th>
+                  </tr>
+                </thead>
+                <tbody id="contractsTableBody" class="divide-y divide-slate-200 dark:divide-slate-800">
+                  <!-- Inyectado por JS -->
+                </tbody>
+              </table>
+            </div>
+          </div>
+        </section>
+
+
+        <!-- SECCIÓN 6: LOG DE ERRORES -->
+        <section id="view-errores" class="space-y-6 hidden">
+          <div>
+            <h2 class="text-lg font-bold text-slate-900 dark:text-white">Registro de Fallos y Excepciones</h2>
+            <p class="text-xs text-slate-500 dark:text-slate-400">Traza en tiempo real de fallos en ejecución de prompts, timeouts de API y permisos</p>
+          </div>
+
+          <div class="bg-white dark:bg-slate-900 rounded-xl border border-slate-200 dark:border-slate-800 shadow-sm overflow-hidden">
+            <div class="overflow-x-auto">
+              <table class="w-full text-left text-sm text-slate-600 dark:text-slate-300">
+                <thead class="bg-slate-50 dark:bg-slate-800/60 text-xs uppercase font-semibold text-slate-500 dark:text-slate-400 border-b border-slate-200 dark:border-slate-800">
+                  <tr>
+                    <th scope="col" class="px-6 py-3.5">Timestamp</th>
+                    <th scope="col" class="px-6 py-3.5">Agente</th>
+                    <th scope="col" class="px-6 py-3.5">Tipo & Gravedad</th>
+                    <th scope="col" class="px-6 py-3.5">Descripción breve</th>
+                    <th scope="col" class="px-6 py-3.5">Estado</th>
+                    <th scope="col" class="px-6 py-3.5 text-right">Acciones</th>
+                  </tr>
+                </thead>
+                <tbody id="logsTableBody" class="divide-y divide-slate-200 dark:divide-slate-800">
+                  <!-- Inyectado por JS -->
+                </tbody>
+              </table>
+            </div>
+          </div>
+        </section>
+
+      </main>
+    </div>
+  </div>
+
+  <!-- CONTENEDOR DE MODALES -->
+  <div id="modalContainer" class="fixed inset-0 z-50 flex items-center justify-center p-4 bg-slate-900/60 backdrop-blur-sm hidden">
+    <!-- Diálogo interno -->
+    <div id="modalCard" class="bg-white dark:bg-slate-900 rounded-2xl border border-slate-200 dark:border-slate-800 shadow-2xl max-w-lg w-full max-h-[90vh] flex flex-col overflow-hidden transform transition-all">
+      <!-- Encabezado de Modal -->
+      <div class="flex items-center justify-between px-6 py-4 border-b border-slate-200 dark:border-slate-800">
+        <h3 id="modalTitle" class="text-base font-bold text-slate-900 dark:text-white">Detalle</h3>
+        <button id="modalCloseBtn" class="text-slate-400 hover:text-slate-600 dark:hover:text-slate-200 p-1 rounded-lg">
+          <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12"/></svg>
+        </button>
+      </div>
+      <!-- Cuerpo dinámico de Modal -->
+      <div id="modalBody" class="p-6 overflow-y-auto space-y-4 text-sm text-slate-600 dark:text-slate-300">
+        <!-- Contenido generado según acción -->
+      </div>
+      <!-- Pie de Modal -->
+      <div id="modalFooter" class="px-6 py-3.5 bg-slate-50 dark:bg-slate-800/50 border-t border-slate-200 dark:border-slate-800 flex justify-end gap-2">
+        <button id="modalPrimaryBtn" class="px-4 py-2 bg-indigo-600 hover:bg-indigo-700 text-white rounded-lg text-xs font-semibold">Cerrar</button>
+      </div>
+    </div>
+  </div>
+
+  <!-- JAVASCRIPT VANILLA -->
+  <script>
+    /* ==========================================================
+       DATOS SIMULADOS Y COHERENTES (AgentHub)
+       ========================================================== */
+    const DATA = {
+      // 5 Usuarios
+      users: [
+        { id: 1, name: "Elena Rostova", email: "elena@techflow.io", plan: "Enterprise Anual", status: "Activo", registered: "12 Ene 2024", role: "Directora de Operaciones" },
+        { id: 2, name: "Carlos Mendoza", email: "cmendoza@novabyte.es", plan: "Pro Mensual", status: "Activo", registered: "03 Feb 2024", role: "Lead Developer" },
+        { id: 3, name: "Lucía Morales", email: "l.morales@finscale.co", plan: "Enterprise Anual", status: "Inactivo", registered: "28 Nov 2023", role: "CFO" },
+        { id: 4, name: "David Kim", email: "dkim@globalnexus.com", plan: "Starter", status: "Activo", registered: "14 Mar 2024", role: "Product Manager" },
+        { id: 5, name: "Beatriz Soto", email: "beatriz@sotologistics.org", plan: "Pro Mensual", status: "Pendiente", registered: "02 Abr 2024", role: "Administradora" }
+      ],
+
+      // 4 Agentes consistentes
+      agents: [
+        {
+          id: 'ag-1',
+          name: "SDR Navigator",
+          owner: "Elena Rostova (TechFlow)",
+          status: "Activo", // Activo (verde)
+          systemPrompt: "Eres SDR Navigator, un agente especializado en prospección B2B y calificación de leads entrantes. Tu meta es analizar el dominio de las empresas, sincronizar con calendarios y agendar reuniones con los decisores clave.",
+          skills: [
+            { name: "Navegación Web", description: "Búsqueda en dominios de leads y extracción de datos públicos" },
+            { name: "Gestión de Calendarios", description: "Sincronización bidireccional con Google Calendar y Outlook" }
+          ]
+        },
+        {
+          id: 'ag-2',
+          name: "DocuSense Auditor",
+          owner: "Lucía Morales (FinScale)",
+          status: "Fallando", // Fallando (rojo)
+          systemPrompt: "Eres DocuSense Auditor. Tu función es la ingesta masiva de balances financieros, auditorías y contratos en PDF, validando firmas criptográficas y discrepancias contables.",
+          skills: [
+            { name: "Lectura de Documentos", description: "Parsing OCR avanzado de archivos PDF, DOCX y hojas de cálculo" },
+            { name: "Navegación Web", description: "Búsqueda en registros mercantiles oficiales" }
+          ]
+        },
+        {
+          id: 'ag-3',
+          name: "SupportHero 24/7",
+          owner: "Carlos Mendoza (NovaByte)",
+          status: "Activo", // Activo (verde)
+          systemPrompt: "Eres SupportHero 24/7. Respondes dudas técnicas sobre APIs REST y webhooks de la plataforma con tono cordial, empático y soluciones de código reproducibles.",
+          skills: [
+            { name: "Lectura de Documentos", description: "Consulta en repositorios de documentación técnica" },
+            { name: "Gestión de Calendarios", description: "Escalamiento y agendamiento con ingenieros de guardia" },
+            { name: "Ejecución de Código", description: "Sandbox seguro para testeo de peticiones cURL y JSON" }
+          ]
+        },
+        {
+          id: 'ag-4',
+          name: "OmniScheduler",
+          owner: "David Kim (GlobalNexus)",
+          status: "Inactivo", // Inactivo (gris)
+          systemPrompt: "Eres OmniScheduler. Coordinas automáticamente eventos internacionales cruzando zonas horarias y disponibilidad de múltiples ejecutivos sin fricción.",
+          skills: [
+            { name: "Gestión de Calendarios", description: "Reserva automática y resolución de solapamientos horarios" }
+          ]
+        }
+      ],
+
+      // Catálogo de Skills
+      skills: [
+        {
+          id: 'sk-1',
+          name: "Navegación Web",
+          description: "Permite al agente explorar URLs públicas, buscar en motores y extraer datos estructurados respetando límites de tasa.",
+          agentsCount: 2,
+          category: "Conectividad",
+          costMonth: "€120/mes"
+        },
+        {
+          id: 'sk-2',
+          name: "Lectura de Documentos",
+          description: "Extracción inteligente de contenido y tablas a partir de PDFs complejos, balances y contratos mediante OCR multilingüe.",
+          agentsCount: 2,
+          category: "Análisis de Datos",
+          costMonth: "€180/mes"
+        },
+        {
+          id: 'sk-3',
+          name: "Gestión de Calendarios",
+          description: "Integración OAuth con Google Workspace y Microsoft 365 para chequear conflictos de agenda y enviar invitaciones seguras.",
+          agentsCount: 3,
+          category: "Productividad",
+          costMonth: "€95/mes"
+        },
+        {
+          id: 'sk-4',
+          name: "Ejecución de Código",
+          description: "Entorno aislado (sandbox Docker) para compilar snippets de Python y JavaScript y validar integraciones en vivo.",
+          agentsCount: 1,
+          category: "Desarrollo",
+          costMonth: "€250/mes"
+        }
+      ],
+
+      // Contrataciones
+      contracts: [
+        {
+          id: "CTR-2024-001",
+          client: "TechFlow Inc. (Elena Rostova)",
+          agentName: "SDR Navigator",
+          skills: [
+            { name: "Navegación Web", price: 120 },
+            { name: "Gestión de Calendarios", price: 95 }
+          ],
+          baseAgentPrice: 650,
+          startDate: "01/01/2024",
+          endDate: "31/12/2024",
+          totalPaid: 865,
+          status: "Vigente"
+        },
+        {
+          id: "CTR-2024-002",
+          client: "FinScale Corp. (Lucía Morales)",
+          agentName: "DocuSense Auditor",
+          skills: [
+            { name: "Lectura de Documentos", price: 180 },
+            { name: "Navegación Web", price: 120 }
+          ],
+          baseAgentPrice: 850,
+          startDate: "15/02/2024",
+          endDate: "15/08/2024",
+          totalPaid: 1150,
+          status: "Vigente"
+        },
+        {
+          id: "CTR-2024-003",
+          client: "NovaByte SL (Carlos Mendoza)",
+          agentName: "SupportHero 24/7",
+          skills: [
+            { name: "Lectura de Documentos", price: 180 },
+            { name: "Gestión de Calendarios", price: 95 },
+            { name: "Ejecución de Código", price: 250 }
+          ],
+          baseAgentPrice: 900,
+          startDate: "01/03/2024",
+          endDate: "31/03/2024",
+          totalPaid: 1425,
+          status: "Completado"
+        },
+        {
+          id: "CTR-2024-004",
+          client: "GlobalNexus (David Kim)",
+          agentName: "OmniScheduler",
+          skills: [
+            { name: "Gestión de Calendarios", price: 95 }
+          ],
+          baseAgentPrice: 400,
+          startDate: "10/01/2024",
+          endDate: "10/04/2024",
+          totalPaid: 495,
+          status: "Pausado"
+        }
+      ],
+
+      // Log de Errores (mínimo 6)
+      errors: [
+        {
+          id: "ERR-9841",
+          timestamp: "2024-05-12 14:32:01",
+          agentName: "DocuSense Auditor",
+          type: "Timeout de API",
+          severity: "Crítico",
+          desc: "Tiempo de espera superado al intentar conectar con el parser OCR del proveedor externo.",
+          status: "Pendiente",
+          trace: "Exception in DocuSense::Worker [Thread-4]\n  File '/agents/docusense/parser.py', line 142, in fetch_ocr\n    response = client.post('https://ocr.internal/api/v2', timeout=30.0)\nTimeoutError: The read operation timed out after 30000ms.\n  at AgentRuntime.execute_skill('Lectura de Documentos')"
+        },
+        {
+          id: "ERR-9842",
+          timestamp: "2024-05-12 13:15:40",
+          agentName: "DocuSense Auditor",
+          type: "Fallo de Memoria",
+          severity: "Crítico",
+          desc: "Límite de tokens de contexto excedido en PDF de 480 páginas sin fragmentar.",
+          status: "Pendiente",
+          trace: "TokenOverflowError: Maximum prompt context length is 128,000 tokens, received 142,850 tokens.\n  File '/runtime/context.py', line 89, in build_window\n  at AgentRuntime.evaluate(agent_id='ag-2')"
+        },
+        {
+          id: "ERR-9839",
+          timestamp: "2024-05-12 11:02:18",
+          agentName: "SDR Navigator",
+          type: "Bloqueo Anti-Bot",
+          severity: "Moderado",
+          desc: "Cloudflare challenge 403 detectado al navegar por dominio corporativo.",
+          status: "Resuelto",
+          trace: "HTTPError: 403 Forbidden - CF-RAY 8820c78a1bf18\n  Target URL: https://prospect-corp.com/team\n  at SkillWebNav.fetch_page() -> status marked as captcha blocked"
+        },
+        {
+          id: "ERR-9835",
+          timestamp: "2024-05-11 18:44:22",
+          agentName: "OmniScheduler",
+          type: "OAuth Token Expirado",
+          severity: "Baja",
+          desc: "El refresh token del calendario de Outlook de GlobalNexus ha expirado.",
+          status: "Resuelto",
+          trace: "OAuth2Error: invalid_grant - AADSTS700082: The refresh token has expired due to inactivity.\n  at OmniScheduler.sync_events()"
+        },
+        {
+          id: "ERR-9830",
+          timestamp: "2024-05-11 16:20:11",
+          agentName: "SupportHero 24/7",
+          type: "Sandbox Memory Limit",
+          severity: "Moderado",
+          desc: "El contenedor de ejecución de código alcanzó el límite asignado de 512MB RAM.",
+          status: "Resuelto",
+          trace: "DockerRuntime: container killed with OOMKilled=true (exit code 137).\n  Command: python test_script.py\n  Skill: 'Ejecución de Código'"
+        },
+        {
+          id: "ERR-9824",
+          timestamp: "2024-05-11 09:12:45",
+          agentName: "DocuSense Auditor",
+          type: "Discrepancia de Firma",
+          severity: "Crítico",
+          desc: "Fallo de validación de firma criptográfica X.509 en archivo de auditoría bancaria.",
+          status: "Pendiente",
+          trace: "SecurityVerificationException: Invalid signature digest for certificate CN=FinScale-Auth-2024.\n  File '/security/verify.py', line 54"
+        }
+      ]
+    };
+
+    /* ==========================================================
+       GESTIÓN DE TEMA (CLARO / OSCURO)
+       ========================================================== */
+    const themeToggleBtn = document.getElementById('themeToggleBtn');
+    const themeLabel = document.getElementById('themeLabel');
+
+    function applyTheme(isDark) {
+      if (isDark) {
+        document.documentElement.classList.add('dark');
+        themeLabel.textContent = 'Modo claro';
+        localStorage.setItem('agenthub_theme', 'dark');
+      } else {
+        document.documentElement.classList.remove('dark');
+        themeLabel.textContent = 'Modo oscuro';
+        localStorage.setItem('agenthub_theme', 'light');
+      }
+    }
+
+    // Inicializar tema según preferencia previa o sistema
+    const savedTheme = localStorage.getItem('agenthub_theme');
+    const prefersDark = window.matchMedia('(prefers-color-scheme: dark)').matches;
+    applyTheme(savedTheme === 'dark' || (!savedTheme && prefersDark));
+
+    themeToggleBtn.addEventListener('click', () => {
+      const isCurrentlyDark = document.documentElement.classList.contains('dark');
+      applyTheme(!isCurrentlyDark);
+    });
+
+    /* ==========================================================
+       NAVEGACIÓN ENTRE SECCIONES
+       ========================================================== */
+    const views = ['dashboard', 'usuarios', 'agentes', 'skills', 'contrataciones', 'errores'];
+    const pageTitles = {
+      dashboard: { title: "Dashboard", subtitle: "Supervisión general de la plataforma SaaS de agentes de IA" },
+      usuarios: { title: "Gestión de usuarios", subtitle: "Directorio de clientes y administradores de la plataforma" },
+      agentes: { title: "Gestión de agentes", subtitle: "Supervisión de estados, prompts y capacidades modulares" },
+      skills: { title: "Catálogo de Skills", subtitle: "Capacidades modulares activables para ampliar tareas de agentes" },
+      contrataciones: { title: "Contrataciones de agentes", subtitle: "Registro de alquileres, planes de facturación y desglose de skills" },
+      errores: { title: "Log de errores", subtitle: "Traza de excepciones, fallos de API y resolución de incidentes" }
+    };
+
+    function navigate(viewName) {
+      views.forEach(v => {
+        const el = document.getElementById(`view-${v}`);
+        if (el) el.classList.toggle('hidden', v !== viewName);
+      });
+
+      // Actualizar estilo en la barra lateral
+      document.querySelectorAll('.nav-item').forEach(btn => {
+        const target = btn.getAttribute('data-nav');
+        if (target === viewName) {
+          btn.className = "nav-item w-full flex items-center gap-3 px-3.5 py-2.5 rounded-lg text-sm font-medium transition-colors text-indigo-700 bg-indigo-50 dark:bg-indigo-950/50 dark:text-indigo-300 font-semibold";
+        } else {
+          btn.className = "nav-item w-full flex items-center gap-3 px-3.5 py-2.5 rounded-lg text-sm font-medium transition-colors text-slate-700 hover:bg-slate-100 dark:text-slate-300 dark:hover:bg-slate-800";
+        }
+      });
+
+      // Actualizar títulos
+      if (pageTitles[viewName]) {
+        document.getElementById('pageTitle').textContent = pageTitles[viewName].title;
+        document.getElementById('pageSubtitle').textContent = pageTitles[viewName].subtitle;
+      }
+
+      // Cerrar sidebar en móviles
+      closeSidebar();
+      // Cerrar cualquier dropdown abierto
+      closeAllDropdowns();
+    }
+
+    // Sidebar móvil
+    const sidebar = document.getElementById('sidebar');
+    const sidebarBackdrop = document.getElementById('sidebarBackdrop');
+    const openSidebarBtn = document.getElementById('openSidebarBtn');
+    const closeSidebarBtn = document.getElementById('closeSidebarBtn');
+
+    function openSidebar() {
+      sidebar.classList.remove('-translate-x-full');
+      sidebarBackdrop.classList.remove('hidden');
+    }
+
+    function closeSidebar() {
+      sidebar.classList.add('-translate-x-full');
+      sidebarBackdrop.classList.add('hidden');
+    }
+
+    openSidebarBtn.addEventListener('click', openSidebar);
+    closeSidebarBtn.addEventListener('click', closeSidebar);
+    sidebarBackdrop.addEventListener('click', closeSidebar);
+
+    /* ==========================================================
+       GESTIÓN DE DROPDOWNS (Cerrar al hacer clic fuera)
+       ========================================================== */
+    function toggleDropdown(event, dropdownId) {
+      event.stopPropagation();
+      const dropdown = document.getElementById(dropdownId);
+      const isHidden = dropdown.classList.contains('hidden');
+      closeAllDropdowns();
+      if (isHidden) {
+        dropdown.classList.remove('hidden');
+      }
+    }
+
+    function closeAllDropdowns() {
+      document.querySelectorAll('.action-dropdown-menu').forEach(menu => {
+        menu.classList.add('hidden');
+      });
+    }
+
+    window.addEventListener('click', (e) => {
+      closeAllDropdowns();
+    });
+
+    /* ==========================================================
+       SISTEMA DE MODALES (Cierre en botón o backdrop)
+       ========================================================== */
+    const modalContainer = document.getElementById('modalContainer');
+    const modalCard = document.getElementById('modalCard');
+    const modalTitle = document.getElementById('modalTitle');
+    const modalBody = document.getElementById('modalBody');
+    const modalCloseBtn = document.getElementById('modalCloseBtn');
+    const modalPrimaryBtn = document.getElementById('modalPrimaryBtn');
+
+    function openModal(title, contentHtml, onConfirm = null, confirmText = 'Aceptar') {
+      modalTitle.textContent = title;
+      modalBody.innerHTML = contentHtml;
+      modalPrimaryBtn.textContent = confirmText;
+      
+      modalPrimaryBtn.onclick = () => {
+        if (onConfirm) onConfirm();
+        closeModal();
+      };
+
+      modalContainer.classList.remove('hidden');
+    }
+
+    function closeModal() {
+      modalContainer.classList.add('hidden');
+      modalBody.innerHTML = '';
+    }
+
+    modalCloseBtn.addEventListener('click', closeModal);
+
+    // Cierre al hacer clic en el backdrop
+    modalContainer.addEventListener('click', (e) => {
+      if (e.target === modalContainer) {
+        closeModal();
+      }
+    });
+
+    /* ==========================================================
+       RENDERIZADO DE SECCIONES
+       ========================================================== */
+
+    // Badge Helpers
+    function getStatusBadge(status) {
+      if (status === 'Activo' || status === 'Vigente' || status === 'Resuelto') {
+        return `<span class="inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-medium bg-emerald-100 text-emerald-800 dark:bg-emerald-950 dark:text-emerald-300 border border-emerald-200 dark:border-emerald-800">${status}</span>`;
+      } else if (status === 'Fallando' || status === 'Crítico') {
+        return `<span class="inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-medium bg-rose-100 text-rose-800 dark:bg-rose-950 dark:text-rose-300 border border-rose-200 dark:border-rose-800">${status}</span>`;
+      } else if (status === 'Inactivo' || status === 'Completado') {
+        return `<span class="inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-medium bg-slate-100 text-slate-700 dark:bg-slate-800 dark:text-slate-300 border border-slate-200 dark:border-slate-700">${status}</span>`;
+      } else {
+        return `<span class="inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-medium bg-amber-100 text-amber-800 dark:bg-amber-950 dark:text-amber-300 border border-amber-200 dark:border-amber-800">${status}</span>`;
+      }
+    }
+
+    function getSeverityBadge(severity) {
+      if (severity === 'Crítico') {
+        return `<span class="inline-flex items-center px-2 py-0.5 rounded text-xs font-bold bg-rose-100 text-rose-800 dark:bg-rose-950 dark:text-rose-300 border border-rose-200 dark:border-rose-800">Crítico</span>`;
+      } else if (severity === 'Moderado') {
+        return `<span class="inline-flex items-center px-2 py-0.5 rounded text-xs font-bold bg-amber-100 text-amber-800 dark:bg-amber-950 dark:text-amber-300 border border-amber-200 dark:border-amber-800">Moderado</span>`;
+      } else {
+        return `<span class="inline-flex items-center px-2 py-0.5 rounded text-xs font-bold bg-sky-100 text-sky-800 dark:bg-sky-950 dark:text-sky-300 border border-sky-200 dark:border-sky-800">Baja</span>`;
+      }
+    }
+
+    // 1. Render Usuarios
+    function renderUsers() {
+      const tbody = document.getElementById('usersTableBody');
+      tbody.innerHTML = DATA.users.map(u => `
+        <tr class="hover:bg-slate-50/70 dark:hover:bg-slate-800/40 transition-colors">
+          <td class="px-6 py-4 font-medium text-slate-900 dark:text-white">${u.name}</td>
+          <td class="px-6 py-4 text-slate-500 dark:text-slate-400">${u.email}</td>
+          <td class="px-6 py-4">
+            <span class="inline-block px-2 py-0.5 rounded text-xs font-medium bg-slate-100 dark:bg-slate-800 text-slate-700 dark:text-slate-300">${u.plan}</span>
+          </td>
+          <td class="px-6 py-4">${getStatusBadge(u.status)}</td>
+          <td class="px-6 py-4 text-right relative">
+            <button onclick="toggleDropdown(event, 'user-dd-${u.id}')" class="p-1.5 rounded-lg hover:bg-slate-100 dark:hover:bg-slate-800 text-slate-500 hover:text-slate-800 dark:hover:text-slate-200" aria-label="Acciones">
+              <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 5v.01M12 12v.01M12 19v.01M12 6a1 1 0 110-2 1 1 0 010 2zm0 7a1 1 0 110-2 1 1 0 010 2zm0 7a1 1 0 110-2 1 1 0 010 2z"/></svg>
+            </button>
+            
+            <!-- Menú desplegable -->
+            <div id="user-dd-${u.id}" class="action-dropdown-menu absolute right-6 top-12 z-30 w-36 bg-white dark:bg-slate-900 rounded-lg shadow-lg border border-slate-200 dark:border-slate-800 py-1 hidden text-left text-xs">
+              <button onclick="viewUserDetail(${u.id})" class="w-full px-3.5 py-2 hover:bg-slate-50 dark:hover:bg-slate-800 text-slate-700 dark:text-slate-200 flex items-center gap-2">
+                <svg class="w-3.5 h-3.5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 12a3 3 0 11-6 0 3 3 0 016 0z"/><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M2.458 12C3.732 7.943 7.523 5 12 5c4.478 0 8.268 2.943 9.542 7-1.274 4.057-5.064 7-9.542 7-4.477 0-8.268-2.943-9.542-7z"/></svg>
+                Ver detalle
+              </button>
+              <button onclick="deleteUser(${u.id})" class="w-full px-3.5 py-2 hover:bg-rose-50 dark:hover:bg-rose-950/40 text-rose-600 dark:text-rose-400 flex items-center gap-2">
+                <svg class="w-3.5 h-3.5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 7l-.867 12.142A2 2 0 0116.138 21H7.862a2 2 0 01-1.995-1.858L5 7m5 4v6m4-6v6m1-10V4a1 1 0 00-1-1h-4a1 1 0 00-1 1v3M4 7h16"/></svg>
+                Eliminar
+              </button>
+            </div>
+          </td>
+        </tr>
+      `).join('');
+    }
+
+    function viewUserDetail(userId) {
+      const u = DATA.users.find(x => x.id === userId);
+      if (!u) return;
+      openModal(
+        `Expediente de Usuario: ${u.name}`,
+        `
+        <div class="space-y-3">
+          <div class="p-3 rounded-lg bg-slate-50 dark:bg-slate-800/50 border border-slate-200 dark:border-slate-800">
+            <p class="text-xs text-slate-500 dark:text-slate-400">Identificador</p>
+            <p class="font-mono text-sm font-semibold text-slate-900 dark:text-white">USR-00${u.id}</p>
+          </div>
+          <div class="grid grid-cols-2 gap-3">
+            <div>
+              <p class="text-xs text-slate-500 dark:text-slate-400">Email Corporativo</p>
+              <p class="font-medium text-slate-800 dark:text-slate-200">${u.email}</p>
+            </div>
+            <div>
+              <p class="text-xs text-slate-500 dark:text-slate-400">Rol</p>
+              <p class="font-medium text-slate-800 dark:text-slate-200">${u.role}</p>
+            </div>
+          </div>
+          <div class="grid grid-cols-2 gap-3">
+            <div>
+              <p class="text-xs text-slate-500 dark:text-slate-400">Plan Contratado</p>
+              <p class="font-semibold text-indigo-600 dark:text-indigo-400">${u.plan}</p>
+            </div>
+            <div>
+              <p class="text-xs text-slate-500 dark:text-slate-400">Estado de Cuenta</p>
+              <div class="mt-1">${getStatusBadge(u.status)}</div>
+            </div>
+          </div>
+          <div>
+            <p class="text-xs text-slate-500 dark:text-slate-400">Fecha de Registro</p>
+            <p class="text-slate-700 dark:text-slate-300">${u.registered}</p>
+          </div>
+        </div>
+        `
+      );
+    }
+
+    function deleteUser(userId) {
+      DATA.users = DATA.users.filter(x => x.id !== userId);
+      renderUsers();
+    }
+
+    // 2. Render Agentes
+    function renderAgents() {
+      const container = document.getElementById('agentsListContainer');
+      container.innerHTML = DATA.agents.map(a => `
+        <div class="bg-white dark:bg-slate-900 rounded-xl border border-slate-200 dark:border-slate-800 p-5 shadow-sm">
+          <div class="flex flex-col sm:flex-row sm:items-center justify-between gap-4">
+            <div class="flex items-start gap-4">
+              <div class="w-10 h-10 rounded-xl bg-indigo-50 dark:bg-indigo-950/60 border border-indigo-200 dark:border-indigo-800 flex items-center justify-center text-indigo-600 dark:text-indigo-400 font-bold shrink-0">
+                ${a.name.substring(0, 2).toUpperCase()}
+              </div>
+              <div>
+                <div class="flex items-center gap-3">
+                  <h3 class="text-base font-bold text-slate-900 dark:text-white">${a.name}</h3>
+                  ${getStatusBadge(a.status)}
+                </div>
+                <p class="text-xs text-slate-500 dark:text-slate-400 mt-0.5">Propietario: <span class="font-medium text-slate-700 dark:text-slate-300">${a.owner}</span></p>
+              </div>
+            </div>
+
+            <!-- Controles a la derecha -->
+            <div class="flex items-center gap-3 self-end sm:self-center relative">
+              <!-- Botón Desplegar Skills -->
+              <button onclick="toggleAgentSkills('${a.id}')" class="flex items-center gap-1.5 px-3 py-1.5 rounded-lg border border-slate-200 dark:border-slate-700 bg-slate-50 dark:bg-slate-800 hover:bg-slate-100 dark:hover:bg-slate-700 text-xs font-medium text-slate-700 dark:text-slate-300 transition-colors">
+                <span id="skill-btn-text-${a.id}">Ver skills (${a.skills.length})</span>
+                <svg id="skill-chevron-${a.id}" class="w-4 h-4 transition-transform duration-200" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 9l-7 7-7-7"/></svg>
+              </button>
+
+              <!-- Menú ⋮ -->
+              <button onclick="toggleDropdown(event, 'agent-dd-${a.id}')" class="p-1.5 rounded-lg hover:bg-slate-100 dark:hover:bg-slate-800 text-slate-500 hover:text-slate-800 dark:hover:text-slate-200" aria-label="Acciones">
+                <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 5v.01M12 12v.01M12 19v.01M12 6a1 1 0 110-2 1 1 0 010 2zm0 7a1 1 0 110-2 1 1 0 010 2zm0 7a1 1 0 110-2 1 1 0 010 2z"/></svg>
+              </button>
+
+              <!-- Dropdown -->
+              <div id="agent-dd-${a.id}" class="action-dropdown-menu absolute right-0 top-10 z-30 w-36 bg-white dark:bg-slate-900 rounded-lg shadow-lg border border-slate-200 dark:border-slate-800 py-1 hidden text-left text-xs">
+                <button onclick="configureAgent('${a.id}')" class="w-full px-3.5 py-2 hover:bg-slate-50 dark:hover:bg-slate-800 text-slate-700 dark:text-slate-200 flex items-center gap-2">
+                  <svg class="w-3.5 h-3.5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M10.325 4.317c.426-1.756 2.924-1.756 3.35 0a1.724 1.724 0 002.573 1.066c1.543-.94 3.31.826 2.37 2.37a1.724 1.724 0 001.065 2.572c1.756.426 1.756 2.924 0 3.35a1.724 1.724 0 00-1.066 2.573c.94 1.543-.826 3.31-2.37 2.37a1.724 1.724 0 00-2.572 1.065c-.426 1.756-2.924 1.756-3.35 0a1.724 1.724 0 00-2.573-1.066c-1.543.94-3.31-.826-2.37-2.37a1.724 1.724 0 00-1.065-2.572c-1.756-.426-1.756-2.924 0-3.35a1.724 1.724 0 001.066-2.573c-.94-1.543.826-3.31 2.37-2.37.996.608 2.296.07 2.572-1.065z"/><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 12a3 3 0 11-6 0 3 3 0 016 0z"/></svg>
+                  Configurar
+                </button>
+                <button onclick="deleteAgent('${a.id}')" class="w-full px-3.5 py-2 hover:bg-rose-50 dark:hover:bg-rose-950/40 text-rose-600 dark:text-rose-400 flex items-center gap-2">
+                  <svg class="w-3.5 h-3.5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 7l-.867 12.142A2 2 0 0116.138 21H7.862a2 2 0 01-1.995-1.858L5 7m5 4v6m4-6v6m1-10V4a1 1 0 00-1-1h-4a1 1 0 00-1 1v3M4 7h16"/></svg>
+                  Eliminar
+                </button>
+              </div>
+            </div>
+          </div>
+
+          <!-- Contenedor colapsable de Skills con transición suave -->
+          <div id="skills-panel-${a.id}" class="overflow-hidden max-h-0 opacity-0 transition-all duration-300">
+            <div class="mt-4 pt-4 border-t border-slate-100 dark:border-slate-800/80">
+              <p class="text-xs font-semibold uppercase tracking-wider text-slate-500 dark:text-slate-400 mb-3">Skills activas para este agente</p>
+              <div class="grid grid-cols-1 sm:grid-cols-2 gap-2.5">
+                ${a.skills.map(s => `
+                  <div class="p-3 rounded-lg bg-slate-50 dark:bg-slate-800/40 border border-slate-200/80 dark:border-slate-800 flex items-start gap-2.5">
+                    <div class="w-2 h-2 rounded-full bg-indigo-500 mt-1.5 shrink-0"></div>
+                    <div>
+                      <p class="text-xs font-bold text-slate-800 dark:text-slate-200">${s.name}</p>
+                      <p class="text-xs text-slate-500 dark:text-slate-400 mt-0.5">${s.description}</p>
+                    </div>
+                  </div>
+                `).join('')}
+              </div>
+            </div>
+          </div>
+        </div>
+      `).join('');
+    }
+
+    function toggleAgentSkills(agentId) {
+      const panel = document.getElementById(`skills-panel-${agentId}`);
+      const chevron = document.getElementById(`skill-chevron-${agentId}`);
+      const isExpanded = panel.style.maxHeight && panel.style.maxHeight !== '0px';
+
+      if (isExpanded) {
+        panel.style.maxHeight = '0px';
+        panel.classList.remove('opacity-100');
+        panel.classList.add('opacity-0');
+        chevron.classList.remove('rotate-180');
+      } else {
+        panel.style.maxHeight = panel.scrollHeight + 32 + 'px';
+        panel.classList.remove('opacity-0');
+        panel.classList.add('opacity-100');
+        chevron.classList.add('rotate-180');
+      }
+    }
+
+    function configureAgent(agentId) {
+      const agent = DATA.agents.find(x => x.id === agentId);
+      if (!agent) return;
+
+      openModal(
+        `Configurar Prompt de Sistema: ${agent.name}`,
+        `
+        <div>
+          <label class="block text-xs font-semibold uppercase tracking-wider text-slate-500 dark:text-slate-400 mb-2">
+            Prompt de Sistema Editable (&lt;textarea&gt;)
+          </label>
+          <textarea id="editSystemPromptArea" rows="6" class="w-full p-3 rounded-lg border border-slate-300 dark:border-slate-700 bg-white dark:bg-slate-800 text-slate-900 dark:text-white text-xs font-mono focus:ring-2 focus:ring-indigo-500 focus:outline-none leading-relaxed">${agent.systemPrompt}</textarea>
+          <p class="text-xs text-slate-500 dark:text-slate-400 mt-2">
+            Este prompt condiciona el comportamiento base, restricciones y herramientas cognitivas del agente.
+          </p>
+        </div>
+        `,
+        () => {
+          const newPrompt = document.getElementById('editSystemPromptArea').value;
+          agent.systemPrompt = newPrompt;
+        },
+        'Guardar Prompt'
+      );
+    }
+
+    function deleteAgent(agentId) {
+      DATA.agents = DATA.agents.filter(x => x.id !== agentId);
+      renderAgents();
+    }
+
+    // 3. Render Skills
+    function renderSkills() {
+      const container = document.getElementById('skillsGridContainer');
+      container.innerHTML = DATA.skills.map(s => `
+        <div class="bg-white dark:bg-slate-900 rounded-xl border border-slate-200 dark:border-slate-800 p-5 shadow-sm flex flex-col justify-between">
+          <div>
+            <div class="flex items-start justify-between">
+              <div>
+                <span class="inline-block px-2 py-0.5 rounded text-[10px] font-bold uppercase tracking-wider bg-slate-100 dark:bg-slate-800 text-slate-600 dark:text-slate-400 mb-1.5">${s.category}</span>
+                <h3 class="text-base font-bold text-slate-900 dark:text-white">${s.name}</h3>
+              </div>
+
+              <!-- Menú ⋮ -->
+              <div class="relative">
+                <button onclick="toggleDropdown(event, 'skill-dd-${s.id}')" class="p-1.5 rounded-lg hover:bg-slate-100 dark:hover:bg-slate-800 text-slate-500 hover:text-slate-800 dark:hover:text-slate-200">
+                  <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 5v.01M12 12v.01M12 19v.01M12 6a1 1 0 110-2 1 1 0 010 2zm0 7a1 1 0 110-2 1 1 0 010 2zm0 7a1 1 0 110-2 1 1 0 010 2z"/></svg>
+                </button>
+
+                <div id="skill-dd-${s.id}" class="action-dropdown-menu absolute right-0 top-8 z-30 w-36 bg-white dark:bg-slate-900 rounded-lg shadow-lg border border-slate-200 dark:border-slate-800 py-1 hidden text-left text-xs">
+                  <button onclick="viewSkillDetail('${s.id}')" class="w-full px-3.5 py-2 hover:bg-slate-50 dark:hover:bg-slate-800 text-slate-700 dark:text-slate-200 flex items-center gap-2">
+                    <svg class="w-3.5 h-3.5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 12a3 3 0 11-6 0 3 3 0 016 0z"/><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M2.458 12C3.732 7.943 7.523 5 12 5c4.478 0 8.268 2.943 9.542 7-1.274 4.057-5.064 7-9.542 7-4.477 0-8.268-2.943-9.542-7z"/></svg>
+                    Ver detalle
+                  </button>
+                  <button onclick="deleteSkill('${s.id}')" class="w-full px-3.5 py-2 hover:bg-rose-50 dark:hover:bg-rose-950/40 text-rose-600 dark:text-rose-400 flex items-center gap-2">
+                    <svg class="w-3.5 h-3.5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 7l-.867 12.142A2 2 0 0116.138 21H7.862a2 2 0 01-1.995-1.858L5 7m5 4v6m4-6v6m1-10V4a1 1 0 00-1-1h-4a1 1 0 00-1 1v3M4 7h16"/></svg>
+                    Eliminar
+                  </button>
+                </div>
+              </div>
+            </div>
+            <p class="text-xs text-slate-600 dark:text-slate-400 mt-2 leading-relaxed">${s.description}</p>
+          </div>
+
+          <div class="mt-4 pt-3 border-t border-slate-100 dark:border-slate-800 flex items-center justify-between text-xs">
+            <span class="text-slate-500 dark:text-slate-400 font-medium">Habilitada en:</span>
+            <span class="inline-flex items-center gap-1.5 font-bold text-indigo-600 dark:text-indigo-400 bg-indigo-50 dark:bg-indigo-950/50 px-2 py-0.5 rounded-full">
+              <svg class="w-3.5 h-3.5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9.75 17L9 20l-1 1h8l-1-1-.75-3M3 13h18M5 17h14a2 2 0 002-2V5a2 2 0 00-2-2H5a2 2 0 00-2 2v10a2 2 0 002 2z"/></svg>
+              ${s.agentsCount} agentes
+            </span>
+          </div>
+        </div>
+      `).join('');
+    }
+
+    function viewSkillDetail(skillId) {
+      const s = DATA.skills.find(x => x.id === skillId);
+      if (!s) return;
+      openModal(
+        `Información de Skill: ${s.name}`,
+        `
+        <div class="space-y-3">
+          <div class="p-3 rounded-lg bg-indigo-50 dark:bg-indigo-950/40 border border-indigo-100 dark:border-indigo-900">
+            <p class="text-xs text-indigo-800 dark:text-indigo-300 font-medium">Categoría Técnica</p>
+            <p class="text-sm font-bold text-indigo-950 dark:text-white">${s.category}</p>
+          </div>
+          <div>
+            <p class="text-xs text-slate-500 dark:text-slate-400">Descripción Funcional</p>
+            <p class="text-sm text-slate-700 dark:text-slate-300 mt-1 leading-relaxed">${s.description}</p>
+          </div>
+          <div class="grid grid-cols-2 gap-3 pt-2">
+            <div>
+              <p class="text-xs text-slate-500 dark:text-slate-400">Agentes que la usan</p>
+              <p class="text-base font-bold text-slate-900 dark:text-white">${s.agentsCount} agentes activos</p>
+            </div>
+            <div>
+              <p class="text-xs text-slate-500 dark:text-slate-400">Coste de suscripción</p>
+              <p class="text-base font-bold text-emerald-600 dark:text-emerald-400">${s.costMonth}</p>
+            </div>
+          </div>
+        </div>
+        `
+      );
+    }
+
+    function deleteSkill(skillId) {
+      DATA.skills = DATA.skills.filter(x => x.id !== skillId);
+      renderSkills();
+    }
+
+    // 4. Render Contrataciones
+    function renderContracts() {
+      const tbody = document.getElementById('contractsTableBody');
+      tbody.innerHTML = DATA.contracts.map(c => `
+        <tr class="hover:bg-slate-50/70 dark:hover:bg-slate-800/40 transition-colors">
+          <td class="px-6 py-4 font-medium text-slate-900 dark:text-white">${c.client}</td>
+          <td class="px-6 py-4">
+            <span class="inline-flex items-center gap-1.5 font-semibold text-slate-800 dark:text-slate-200">
+              <span class="w-2 h-2 rounded-full bg-indigo-500"></span>
+              ${c.agentName}
+            </span>
+          </td>
+          <td class="px-6 py-4">
+            <div class="flex flex-wrap gap-1">
+              ${c.skills.map(sk => `<span class="px-2 py-0.5 rounded text-[11px] bg-slate-100 dark:bg-slate-800 text-slate-700 dark:text-slate-300">${sk.name}</span>`).join('')}
+            </div>
+          </td>
+          <td class="px-6 py-4 text-xs text-slate-500 dark:text-slate-400 whitespace-nowrap">
+            ${c.startDate} — ${c.endDate}
+          </td>
+          <td class="px-6 py-4 font-bold text-slate-900 dark:text-white">€${c.totalPaid}</td>
+          <td class="px-6 py-4 text-right relative">
+            <button onclick="toggleDropdown(event, 'ctr-dd-${c.id}')" class="p-1.5 rounded-lg hover:bg-slate-100 dark:hover:bg-slate-800 text-slate-500 hover:text-slate-800 dark:hover:text-slate-200" aria-label="Acciones">
+              <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 5v.01M12 12v.01M12 19v.01M12 6a1 1 0 110-2 1 1 0 010 2zm0 7a1 1 0 110-2 1 1 0 010 2zm0 7a1 1 0 110-2 1 1 0 010 2z"/></svg>
+            </button>
+            <div id="ctr-dd-${c.id}" class="action-dropdown-menu absolute right-6 top-12 z-30 w-36 bg-white dark:bg-slate-900 rounded-lg shadow-lg border border-slate-200 dark:border-slate-800 py-1 hidden text-left text-xs">
+              <button onclick="viewContractDetail('${c.id}')" class="w-full px-3.5 py-2 hover:bg-slate-50 dark:hover:bg-slate-800 text-slate-700 dark:text-slate-200 flex items-center gap-2">
+                <svg class="w-3.5 h-3.5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 12a3 3 0 11-6 0 3 3 0 016 0z"/><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M2.458 12C3.732 7.943 7.523 5 12 5c4.478 0 8.268 2.943 9.542 7-1.274 4.057-5.064 7-9.542 7-4.477 0-8.268-2.943-9.542-7z"/></svg>
+                Ver detalle
+              </button>
+            </div>
+          </td>
+        </tr>
+      `).join('');
+    }
+
+    function viewContractDetail(contractId) {
+      const c = DATA.contracts.find(x => x.id === contractId);
+      if (!c) return;
+
+      const skillsListHtml = c.skills.map(sk => `
+        <div class="flex items-center justify-between py-1.5 border-b border-slate-100 dark:border-slate-800/80 text-xs">
+          <span class="text-slate-700 dark:text-slate-300 font-medium">${sk.name}</span>
+          <span class="font-mono text-slate-900 dark:text-white font-semibold">€${sk.price}/mes</span>
+        </div>
+      `).join('');
+
+      openModal(
+        `Desglose del Contrato: ${c.id}`,
+        `
+        <div class="space-y-4">
+          <div class="flex items-center justify-between p-3 rounded-lg bg-slate-50 dark:bg-slate-800/40 border border-slate-200 dark:border-slate-800">
+            <div>
+              <p class="text-xs text-slate-500 dark:text-slate-400">Cliente</p>
+              <p class="text-sm font-bold text-slate-900 dark:text-white">${c.client}</p>
+            </div>
+            <div>
+              <p class="text-xs text-slate-500 dark:text-slate-400 text-right">Estado</p>
+              <div>${getStatusBadge(c.status)}</div>
+            </div>
+          </div>
+
+          <div>
+            <p class="text-xs text-slate-500 dark:text-slate-400 mb-1">Agente Asignado</p>
+            <div class="p-2.5 rounded-lg bg-indigo-50/50 dark:bg-indigo-950/30 border border-indigo-100 dark:border-indigo-900/60 flex items-center justify-between">
+              <span class="text-xs font-bold text-indigo-950 dark:text-indigo-200">${c.agentName} (Tarifa Base)</span>
+              <span class="font-mono text-xs font-bold text-slate-900 dark:text-white">€${c.baseAgentPrice}</span>
+            </div>
+          </div>
+
+          <div>
+            <p class="text-xs font-semibold uppercase tracking-wider text-slate-500 dark:text-slate-400 mb-2">
+              Desglose Individual de Skills Contratadas
+            </p>
+            <div class="p-3 rounded-lg border border-slate-200 dark:border-slate-800 bg-white dark:bg-slate-900">
+              ${skillsListHtml}
+              <div class="flex items-center justify-between pt-2.5 mt-1 text-sm font-bold text-slate-900 dark:text-white">
+                <span>Total Facturado</span>
+                <span class="text-emerald-600 dark:text-emerald-400 font-mono text-base">€${c.totalPaid}</span>
+              </div>
+            </div>
+          </div>
+
+          <div class="text-xs text-slate-500 dark:text-slate-400 flex justify-between">
+            <span>Periodo contratado:</span>
+            <span class="font-medium text-slate-700 dark:text-slate-300">${c.startDate} hasta ${c.endDate}</span>
+          </div>
+        </div>
+        `
+      );
+    }
+
+    // 5. Render Log de Errores
+    function renderErrors() {
+      const tbody = document.getElementById('logsTableBody');
+      tbody.innerHTML = DATA.errors.map(err => `
+        <tr class="hover:bg-slate-50/70 dark:hover:bg-slate-800/40 transition-colors">
+          <td class="px-6 py-4 font-mono text-xs text-slate-500 dark:text-slate-400 whitespace-nowrap">${err.timestamp}</td>
+          <td class="px-6 py-4 font-semibold text-slate-800 dark:text-slate-200 whitespace-nowrap">${err.agentName}</td>
+          <td class="px-6 py-4 whitespace-nowrap">
+            <div class="flex items-center gap-2">
+              ${getSeverityBadge(err.severity)}
+              <span class="text-xs font-medium text-slate-700 dark:text-slate-300">${err.type}</span>
+            </div>
+          </td>
+          <td class="px-6 py-4 text-xs text-slate-600 dark:text-slate-400 max-w-xs truncate">${err.desc}</td>
+          <td class="px-6 py-4 whitespace-nowrap" id="error-status-${err.id}">
+            ${getStatusBadge(err.status)}
+          </td>
+          <td class="px-6 py-4 text-right relative">
+            <button onclick="toggleDropdown(event, 'err-dd-${err.id}')" class="p-1.5 rounded-lg hover:bg-slate-100 dark:hover:bg-slate-800 text-slate-500 hover:text-slate-800 dark:hover:text-slate-200" aria-label="Acciones">
+              <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 5v.01M12 12v.01M12 19v.01M12 6a1 1 0 110-2 1 1 0 010 2zm0 7a1 1 0 110-2 1 1 0 010 2zm0 7a1 1 0 110-2 1 1 0 010 2z"/></svg>
+            </button>
+            <div id="err-dd-${err.id}" class="action-dropdown-menu absolute right-6 top-12 z-30 w-44 bg-white dark:bg-slate-900 rounded-lg shadow-lg border border-slate-200 dark:border-slate-800 py-1 hidden text-left text-xs">
+              <button onclick="viewErrorDetail('${err.id}')" class="w-full px-3.5 py-2 hover:bg-slate-50 dark:hover:bg-slate-800 text-slate-700 dark:text-slate-200 flex items-center gap-2">
+                <svg class="w-3.5 h-3.5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 12a3 3 0 11-6 0 3 3 0 016 0z"/><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M2.458 12C3.732 7.943 7.523 5 12 5c4.478 0 8.268 2.943 9.542 7-1.274 4.057-5.064 7-9.542 7-4.477 0-8.268-2.943-9.542-7z"/></svg>
+                Ver detalle
+              </button>
+              <button onclick="resolveError('${err.id}')" class="w-full px-3.5 py-2 hover:bg-emerald-50 dark:hover:bg-emerald-950/40 text-emerald-600 dark:text-emerald-400 flex items-center gap-2">
+                <svg class="w-3.5 h-3.5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5 13l4 4L19 7"/></svg>
+                Marcar como resuelto
+              </button>
+            </div>
+          </td>
+        </tr>
+      `).join('');
+    }
+
+    function viewErrorDetail(errId) {
+      const err = DATA.errors.find(x => x.id === errId);
+      if (!err) return;
+
+      openModal(
+        `Traza Completa: ${err.id} (${err.agentName})`,
+        `
+        <div class="space-y-3">
+          <div class="flex items-center justify-between p-3 rounded-lg bg-slate-50 dark:bg-slate-800/40 border border-slate-200 dark:border-slate-800">
+            <div>
+              <p class="text-xs text-slate-500 dark:text-slate-400">Tipo & Gravedad</p>
+              <div class="flex items-center gap-2 mt-1">
+                ${getSeverityBadge(err.severity)}
+                <span class="text-xs font-semibold text-slate-900 dark:text-white">${err.type}</span>
+              </div>
+            </div>
+            <div>
+              <p class="text-xs text-slate-500 dark:text-slate-400 text-right">Estado</p>
+              <div class="mt-1">${getStatusBadge(err.status)}</div>
+            </div>
+          </div>
+
+          <div>
+            <p class="text-xs text-slate-500 dark:text-slate-400">Descripción del Fallo</p>
+            <p class="text-xs text-slate-700 dark:text-slate-300 mt-0.5">${err.desc}</p>
+          </div>
+
+          <div>
+            <p class="text-xs font-semibold uppercase tracking-wider text-slate-500 dark:text-slate-400 mb-1.5">Traza de Pila (Stacktrace)</p>
+            <pre class="p-3 rounded-lg bg-slate-950 text-emerald-400 text-[11px] font-mono overflow-x-auto leading-relaxed border border-slate-800">${err.trace}</pre>
+          </div>
+        </div>
+        `
+      );
+    }
+
+    function resolveError(errId) {
+      const err = DATA.errors.find(x => x.id === errId);
+      if (err) {
+        err.status = "Resuelto";
+        renderErrors();
+      }
+    }
+
+    // Inicializar renders al cargar la app
+    renderUsers();
+    renderAgents();
+    renderSkills();
+    renderContracts();
+    renderErrors();
+
+  </script>
+</body>
+</html>
