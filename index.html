@@ -106,23 +106,23 @@
     <div id="sidebarBackdrop" class="fixed inset-0 z-30 bg-slate-900/50 backdrop-blur-sm hidden md:hidden"></div>
 
     <!-- CONTENEDOR PRINCIPAL -->
-    <div class="flex-1 flex flex-col md:pl-64">
+    <div class="min-w-0 flex-1 flex flex-col md:pl-64">
       
       <!-- HEADER / BARRA SUPERIOR -->
       <header class="sticky top-0 z-20 h-16 bg-white/90 dark:bg-slate-900/90 backdrop-blur border-b border-slate-200 dark:border-slate-800 px-4 sm:px-6 flex items-center justify-between">
-        <div class="flex items-center gap-3">
+        <div class="min-w-0 flex-1 flex items-center gap-3">
           <button id="openSidebarBtn" class="md:hidden p-2 rounded-lg text-slate-600 hover:bg-slate-100 dark:text-slate-300 dark:hover:bg-slate-800">
             <svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 6h16M4 12h16M4 18h16"/></svg>
           </button>
-          <div>
-            <h1 id="pageTitle" class="text-lg font-bold text-slate-900 dark:text-white">Dashboard</h1>
-            <p id="pageSubtitle" class="text-xs text-slate-500 dark:text-slate-400 hidden sm:block">Supervisión general de la plataforma SaaS de agentes de IA</p>
+          <div class="min-w-0">
+            <h1 id="pageTitle" class="truncate text-lg font-bold text-slate-900 dark:text-white">Dashboard</h1>
+            <p id="pageSubtitle" class="truncate text-xs text-slate-500 dark:text-slate-400 hidden sm:block">Supervisión general de la plataforma SaaS de agentes de IA</p>
           </div>
         </div>
 
         <!-- Acciones del header: Modo oscuro -->
-        <div class="flex items-center gap-3">
-          <span class="text-xs text-slate-500 dark:text-slate-400 hidden md:inline-block">Plataforma v2.4</span>
+        <div class="flex shrink-0 items-center gap-3">
+          <span class="text-xs text-slate-500 dark:text-slate-400 hidden lg:inline-block">Plataforma v2.4</span>
           <!-- Botón de Modo Claro / Oscuro -->
           <button id="themeToggleBtn" aria-label="Cambiar tema" class="flex items-center gap-2 px-3 py-1.5 rounded-lg border border-slate-200 dark:border-slate-700 bg-slate-50 dark:bg-slate-800 hover:bg-slate-100 dark:hover:bg-slate-700 text-slate-700 dark:text-slate-200 text-xs font-medium transition-colors">
             <span id="themeIcon">
@@ -141,7 +141,7 @@
       </header>
 
       <!-- CONTENIDO PRINCIPAL (MAIN) -->
-      <main class="flex-1 p-4 sm:p-6 lg:p-8 max-w-7xl w-full mx-auto">
+      <main class="min-w-0 flex-1 p-4 sm:p-6 lg:p-8 max-w-7xl w-full mx-auto">
         
         <!-- SECCIÓN 1: DASHBOARD -->
         <section id="view-dashboard" class="space-y-6">
@@ -232,8 +232,8 @@
 
           <!-- Tabla de usuarios -->
           <div class="bg-white dark:bg-slate-900 rounded-xl border border-slate-200 dark:border-slate-800 shadow-sm overflow-hidden">
-            <div class="overflow-x-auto">
-              <table class="w-full text-left text-sm text-slate-600 dark:text-slate-300">
+            <div class="min-w-0 max-w-full overflow-x-auto">
+              <table class="w-full min-w-[720px] text-left text-sm text-slate-600 dark:text-slate-300">
                 <thead class="bg-slate-50 dark:bg-slate-800/60 text-xs uppercase font-semibold text-slate-500 dark:text-slate-400 border-b border-slate-200 dark:border-slate-800">
                   <tr>
                     <th scope="col" class="px-6 py-3.5">Nombre</th>
@@ -298,8 +298,8 @@
           </div>
 
           <div class="bg-white dark:bg-slate-900 rounded-xl border border-slate-200 dark:border-slate-800 shadow-sm overflow-hidden">
-            <div class="overflow-x-auto">
-              <table class="w-full text-left text-sm text-slate-600 dark:text-slate-300">
+            <div class="min-w-0 max-w-full overflow-x-auto">
+              <table class="w-full min-w-[900px] text-left text-sm text-slate-600 dark:text-slate-300">
                 <thead class="bg-slate-50 dark:bg-slate-800/60 text-xs uppercase font-semibold text-slate-500 dark:text-slate-400 border-b border-slate-200 dark:border-slate-800">
                   <tr>
                     <th scope="col" class="px-6 py-3.5">Cliente</th>
@@ -327,8 +327,8 @@
           </div>
 
           <div class="bg-white dark:bg-slate-900 rounded-xl border border-slate-200 dark:border-slate-800 shadow-sm overflow-hidden">
-            <div class="overflow-x-auto">
-              <table class="w-full text-left text-sm text-slate-600 dark:text-slate-300">
+            <div class="min-w-0 max-w-full overflow-x-auto">
+              <table class="w-full min-w-[980px] text-left text-sm text-slate-600 dark:text-slate-300">
                 <thead class="bg-slate-50 dark:bg-slate-800/60 text-xs uppercase font-semibold text-slate-500 dark:text-slate-400 border-b border-slate-200 dark:border-slate-800">
                   <tr>
                     <th scope="col" class="px-6 py-3.5">Timestamp</th>
